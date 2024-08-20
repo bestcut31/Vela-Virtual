@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vela Virtual</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Courier New', cursive; /* Fonte cursiva */
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .candle {
+            width: 100px;
+            height: 200px;
+            background: #ffb3b3; /* Rosa claro */
+            margin: 20px auto;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+        }
+        .flame {
+            width: 20px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,165,0,0.7) 40%, rgba(255,69,0,0.9) 70%, rgba(255,0,0,0.7) 100%);
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            top: -40px;
+            left: 40px;
+            transform-origin: bottom center;
+            opacity: 0;
+        }
+        .flame.burning {
+            animation: flame 1s infinite;
+        }
+        @keyframes flame {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(10deg); opacity: 0.5; }
+            100% { transform: scale(1) rotate(-10deg); opacity: 1; }
+        }
+        textarea {
+            width: 80%;
+            max-width: 500px;
+            font-family: 'Courier New', cursive; /* Fonte cursiva */
+        }
+        .message {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px auto;
+            width: 80%;
+            max-width: 500px;
+            font-family: 'Courier New', cursive; /* Fonte cursiva */
+        }
+        button {
+            background-color: #ff6666;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Courier New', cursive; /* Fonte cursiva */
+        }
+        button:hover {
+            background-color: #ff3333;
+        }
+        .instructions {
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem-vindo à Vela Virtual</h1>
+    <p class="instructions">
+        Ao saber que estou a caminho, acenda essa vela para iluminar minha chegada e deixe sua intenção.<br>
+        Ass: Sofia
+    </p>
+    <div class="candle" id="candle">
+        <div class="flame" id="flame"></div>
+    </div>
+    <button onclick="lightCandle()">Acender Vela</button>
+    <form id="messageForm">
+        <textarea id="message" placeholder="Deixe sua mensagem e intenção" rows="4"></textarea><br>
+        <button type="submit">Enviar</button>
+    </form>
+    <div id="messages"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMessages();
+        });
+
+        function lightCandle() {
+            document.getElementById('flame').classList.add('burning');
+        }
+
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const message = document.getElementById('message').value;
+            if (message) {
+                saveMessage(message);
+                displayMessage(message);
+                document.getElementById('message').value = '';
+            }
+        });
+
+        function saveMessage(message) {
+            let messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messages.push(message);
+            localStorage.setItem('messages', JSON.stringify(messages));
+        }
+
+        function loadMessages() {
+            let messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messages.forEach(message => displayMessage(message));
+        }
+
+        function displayMessage(message) {
+            const messagesDiv = document.getElementById('messages');
+            const newMessage = document.createElement('div');
+            newMessage.className = 'message';
+            newMessage.textContent = message;
+            messagesDiv.appendChild(newMessage);
+        }
+    </script>
+</body>
+</html>
